@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 SUDO_USER=chronos
 
 CHROOT_TRUNK_DIR=/home/chronos/trunk
@@ -89,7 +91,7 @@ cat << EOF > "${target}/chromiumos-niceties.sh"
 PS1='\$(r=\$?; __git_branch_ps1 "(%s) "; exit \$r)'"\${PS1}"
 PS1="(cr) \${PS1}"
 EOF
-local localegen="/etc/locale.gen"
+localegen="/etc/locale.gen"
 if ! grep -q -v -e '^#' -e '^$' "${localegen}" ; then
   cat <<EOF >> "${localegen}"
 en_US ISO-8859-1

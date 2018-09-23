@@ -3,7 +3,7 @@
 set -e
 
 echo "Changing directory"
-cd /chromiumos/src/scripts
+cd /home/chronos/trunk/src/scripts
 
 echo "Setup board"
 export BOARD=amd64-generic

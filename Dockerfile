@@ -14,14 +14,18 @@ COPY --from=sdk-download /sdk /
 # fix COPY permissions
 RUN chmod +s /usr/bin/sudo
 RUN chown -R chronos:chronos /home/chronos
+# fix home directory
+RUN usermod -d /home/chronos chronos
 
 COPY fetch-source.sh /usr/local/bin/
 COPY setup-root.sh /usr/local/bin/
 
+# setup PATH beforehand
 ENV PATH=$PATH:/opt/depot_tools:/home/chronos/trunk/chromite/bin
-
+# enable passwordless sudo
 RUN echo "chronos ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
+# perform build as chronos
 USER chronos
 RUN git config --global user.email "dev@null"
 RUN git config --global user.name "/dev/null"
