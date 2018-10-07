@@ -9,6 +9,9 @@ DEPOT_TOOLS_DIR=/home/chronos/depot_tools
 SRC_ROOT=${CHROOT_TRUNK_DIR}/src
 SCRIPT_ROOT=${SRC_ROOT}/scripts
 
+# ADDITIONAL
+mkdir -p /var/cache/chromeos-cache/distfiles/{host,target}
+
 # https://chromium.googlesource.com/chromiumos/platform/crosutils/+/73fc534b0d6aa8fc45520b3b50be2c0654fcc24c/sdk_lib/make_chroot.sh#13
 . "${SCRIPT_ROOT}/common.sh" || exit 1
 
@@ -130,7 +133,9 @@ emerge -uNv $USEPKG --select $EMERGE_JOBS \
   pbzip2 dev-libs/openssl net-misc/curl sudo app-portage/gentoolkit
 set -e
 "${CHROOT_TRUNK_DIR}/src/scripts/build_library/perl_rebuild.sh"
-sudo -u "${SUDO_USER}" "${CHROOT_TRUNK_DIR}/src/scripts/run_chroot_version_hooks" --init_latest
-UPDATE_ARGS=( --skip_toolchain_update )
+#sudo -u "${SUDO_USER}" run_chroot_version_hooks --init_latest
+source /etc/env.d/99chromiumos
+sudo -u "${SUDO_USER}" run_chroot_version_hooks
+UPDATE_ARGS=( --skip_toolchain_update --nousepkg )
 sudo -u "${SUDO_USER}" "${CHROOT_TRUNK_DIR}/src/scripts/update_chroot" "${UPDATE_ARGS[@]}"
 java-config --set-system-vm 1

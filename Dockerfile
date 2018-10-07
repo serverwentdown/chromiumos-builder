@@ -13,12 +13,13 @@ COPY --from=sdk-download /sdk /
 COPY --from=sdk-download /depot_tools /home/chronos/depot_tools/
 
 COPY fetch-source.sh /usr/local/bin/
-COPY setup-root.sh /usr/local/bin/
+#COPY setup-root.sh /usr/local/bin/
 COPY full-build.sh /usr/local/bin/
 
 # fix COPY permissions
 RUN chmod +s /usr/bin/sudo
 RUN chown -R chronos:chronos /home/chronos
+RUN chmod 777 /tmp
 # fix home directory
 RUN usermod -d /home/chronos chronos
 
@@ -31,6 +32,8 @@ RUN echo "chronos ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER chronos
 RUN git config --global user.email "dev@null"
 RUN git config --global user.name "/dev/null"
+
+COPY setup-root.sh /usr/local/bin/
 
 CMD ["/bin/bash"]
 
