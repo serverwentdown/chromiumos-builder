@@ -1,0 +1,9 @@
+pipeline:
+  docker-environment:
+    image: plugins/docker
+    registry: registry.makerforce.io
+    secrets: [ docker_username, docker_password ]
+    repo: registry.makerforce.io/ambrose/chromiumos-builder
+    target: sdk
+    tags:
+      - latest

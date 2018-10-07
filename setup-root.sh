@@ -5,6 +5,7 @@ set -e
 SUDO_USER=chronos
 
 CHROOT_TRUNK_DIR=/home/chronos/trunk
+DEPOT_TOOLS_DIR=/home/chronos/depot_tools
 SRC_ROOT=${CHROOT_TRUNK_DIR}/src
 SCRIPT_ROOT=${SRC_ROOT}/scripts
 
@@ -74,7 +75,7 @@ ln -s ../../cache/chromeos-cache/distfiles/target \
   "/var/lib/portage/distfiles-target"
 target="/etc/env.d/99chromiumos"
 cat <<EOF > "${target}"
-PATH="${CHROOT_TRUNK_DIR}/chromite/bin:${DEPOT_TOOLS_DIR}"
+PATH="${CHROOT_TRUNK_DIR}/chromite/bin:${DEPOT_TOOLS_DIR}:$PATH"
 CROS_WORKON_SRCROOT="${CHROOT_TRUNK_DIR}"
 PORTAGE_USERNAME="${SUDO_USER}"
 EOF
@@ -127,8 +128,9 @@ TOOLCHAIN_ARGS=( --deleteold )
     --hostonly "${TOOLCHAIN_ARGS[@]}"
 emerge -uNv $USEPKG --select $EMERGE_JOBS \
   pbzip2 dev-libs/openssl net-misc/curl sudo app-portage/gentoolkit
+set -e
 "${CHROOT_TRUNK_DIR}/src/scripts/build_library/perl_rebuild.sh"
-"${CHROOT_TRUNK_DIR}/src/scripts/run_chroot_version_hooks" --init_latest
+sudo -u "${SUDO_USER}" "${CHROOT_TRUNK_DIR}/src/scripts/run_chroot_version_hooks" --init_latest
 UPDATE_ARGS=( --skip_toolchain_update )
-"${CHROOT_TRUNK_DIR}/src/scripts/update_chroot" "${UPDATE_ARGS[@]}"
+sudo -u "${SUDO_USER}" "${CHROOT_TRUNK_DIR}/src/scripts/update_chroot" "${UPDATE_ARGS[@]}"
 java-config --set-system-vm 1
